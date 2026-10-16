@@ -1,0 +1,12 @@
+# Конфигурация `cargo audit` — проверка зависимостей на известные уязвимости.
+
+[advisories]
+# RUSTSEC-2023-0071 (rsa): пакет присутствует в Cargo.lock только как
+# опциональная зависимость драйвера sqlx-mysql, который мы НЕ используем
+# (взят только SQLite, см. Cargo.toml: sqlx с default-features = false).
+# Проверено: rsa нет ни в графе зависимостей (`cargo tree`), ни в сборке
+# (`target/debug/deps`), поэтому уязвимость на проект не влияет.
+ignore = ["RUSTSEC-2023-0071"]
+
+# Оставшееся предупреждение RUSTSEC-2024-0370 (proc-macro-error unmaintained)
+# уходит само после перехода с utoipa 4.x на utoipa 5.x.

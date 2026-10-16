@@ -1,0 +1,29 @@
+[package]
+name = "axum_server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.7"
+tokio = { version = "1", features = ["full"] }
+tower-http = { version = "0.5", features = ["trace", "cors"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = "0.4"
+# Берём только SQLite: отключаем дефолтные фичи sqlx, чтобы в проект не попадали
+# драйверы MySQL/Postgres и их транзитивные зависимости (меньше поверхность атаки и быстрее сборка).
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio-rustls", "sqlite", "macros", "migrate"] }
+async-trait = "0.1"
+# Swagger UI подключаем только в dev-режиме (см. Config::docs_enabled).
+utoipa = { version = "4.2", features = ["axum_extras"] }
+utoipa-swagger-ui = { version = "7.1", features = ["axum"] }
+dotenvy = "0.15"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-appender = "0.2"
+
+[dev-dependencies]
+# tower нужен только в тестах: ServiceExt::oneshot позволяет вызвать роутер
+# напрямую, без реального TCP-соединения. Версия 0.5 совпадает с той,
+# которую использует axum, — дубля зависимостей нет.
+tower = { version = "0.5", features = ["util"] }
